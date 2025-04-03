@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DS4200 Ski Resort Analysis</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <style>
+    .sankey-container {
+      margin: 40px 0;
+      text-align: center;
+    }
+    .visualization-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .visualization-card {
+      border: 1px solid #ddd;
+      padding: 20px;
+      text-align: center;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .visualization-card h2 {
+      font-size: 1.2em;
+      margin-bottom: 12px;
+      color: #333;
+    }
+    .visualization-card p {
+      font-size: 0.95em;
+      color: #666;
+      line-height: 1.4;
+    }
+    .visualization-card img,
+    .visualization-card svg,
+    .visualization-card div {
+      width: 100%;
+      height: auto;
+      margin-bottom: 12px;
+    }
+    header {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #f7f7f7;
+    }
+    header h1 {
+      font-size: 2em;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    header p {
+      font-size: 1em;
+      color: #555;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+      display: flex;
+      justify-content: center;
+    }
+    nav ul li {
+      margin: 0 15px;
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+    .summary, .references {
+      padding: 20px;
+      margin: 20px;
+      background-color: #f7f7f7;
+    }
+    .summary h2, .references h2 {
+      color: #333;
+      font-size: 1.5em;
+      margin-bottom: 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #f7f7f7;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <h1>DS4200 Ski Resort Analysis</h1>
+      <p>Unveiling the Dynamics of Resort Traffic, Weather Patterns, and Terrain Diversity</p>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="project.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="visualizations.html">Visualizations</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="sankey-container">
+    <h2>Resort to Snowfall Interactive Flow</h2>
+    <svg id="sankey" width="960" height="500"></svg>
+    <p>An interactive Sankey diagram illustrating the dynamic flow of snowfall metrics from various ski resorts to categorized snowfall groups.</p>
+  </section>
+
+  <section class="visualization-grid">
+    <div class="visualization-card">
+      <h2>Western Precipitation Trends</h2>
+      <img src="westmonthly_precipitation.png" alt="Monthly Precipitation Trends in Western Ski Resorts">
+      <p>A detailed visualization of monthly precipitation patterns across Western ski resorts, highlighting seasonal trends and anomalies.</p>
+    </div>
+
+    <div class="visualization-card">
+      <h2>Altitude vs Social Engagement</h2>
+      <img src="altitude_boxplot.png" alt="Boxplot of Altitude and Social Media Engagement">
+      <p>A boxplot analysis examining the relationship between resort altitude and social media engagement, revealing variations in user interactions.</p>
+    </div>
+
+    <div class="visualization-card">
+      <h2>Eastern Precipitation Trends</h2>
+      <img src="eastmonthly_precipitation.png" alt="Monthly Precipitation Trends in Eastern Ski Resorts">
+      <p>A comprehensive look at monthly precipitation data in Eastern ski resorts, providing insights into regional weather patterns.</p>
+    </div>
+
+    <div class="visualization-card">
+      <h2>Eastern Slope Distribution</h2>
+      <div id="eastPie"></div>
+      <p>An interactive pie chart presenting the distribution of slope types in Eastern ski resorts, emphasizing terrain diversity.</p>
+    </div>
+
+    <div class="visualization-card">
+      <h2>Western Slope Distribution</h2>
+      <div id="westPie"></div>
+      <p>An interactive pie chart showcasing the breakdown of slope types in Western ski resorts, highlighting key differences in terrain offerings.</p>
+    </div>
+
+    <div class="visualization-card">
+      <h2>Dashboard: Category vs Value</h2>
+      <select id="filterSelect">
+        <option value="all">All</option>
+      </select>
+      <div id="plotlyChart" style="width:100%;height:400px;"></div>
+      <p>Interactive bar chart showing value distributions by selected categories.</p>
+    </div>
+  </section>
+
+  <section class="summary">
+    <h2>Key Insights</h2>
+    <ul>
+      <li>Distinct seasonal precipitation trends across regions.</li>
+      <li>Correlation between resort altitude and social media engagement.</li>
+      <li>Variation in slope type distribution between Eastern and Western regions.</li>
+    </ul>
+  </section>
+
+  <section class="references">
+    <h2>References</h2>
+    <ul>
+      <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9780482/">Influencing Factors of Destination Choice of Ski Tourism Enthusiasts</a></li>
+      <li><a href="https://www.tandfonline.com/doi/full/10.1080/13683500.2017.1410110">A Critical Review of Climate Change Risk for Ski Tourism</a></li>
+      <li><a href="https://www.researchgate.net/publication/338946401_THE_RESEARCH_OF_SKIER_MOTIVATIONS_AND_FACTORS_INFLUENCING_THE_CHOICE_OF_A_SKI_DESTINATION">Skier Motivations and Factors Influencing the Choice of a Ski Destination</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 DS4200 Team Project. All rights reserved.</p>
+  </footer>
+
+  <script src="project.js"></script>
+</body>
+</html>
