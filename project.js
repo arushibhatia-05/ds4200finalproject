@@ -268,27 +268,12 @@ d3.csv("slopes_comparison_long.csv").then(function(data) {
   createPieChart(svgWest, "West Coast");
 });
 
+
 // --- Dashboard Chart using JSON and Plotly with Filter Controls ---
 let dashboardData;
+// --- Dashboard Chart using JSON and Plotly with Filter Controls ---
 d3.json("dashboard.json").then(function(data) {
-  const sizeArray = data.data[0].marker.size.bdata;
-
-  // Decode base64-encoded binary float array
-  const decoded = new Float64Array(
-    new Uint8Array(atob(sizeArray).split("").map(c => c.charCodeAt(0))).buffer
-  );
-
-  const trace = {
-    y: Array.from(decoded),
-    type: 'bar'
-  };
-
-  const layout = {
-    title: '% Black Runs Distribution',
-    yaxis: { title: '% Black Runs' }
-  };
-
-  Plotly.newPlot('plotlyChart', [trace], layout);
+  Plotly.newPlot('plotlyChart', data.data, data.layout);
 });
 
 document.getElementById('filterSelect').addEventListener('change', function() {
