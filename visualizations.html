@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DS4200 Ski Resort Analysis</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <style>
+    /* Added responsive fixes */
+    .sankey-container {
+      max-width: 960px;
+      width: 90%;
+      margin: 80px auto 40px auto; /* Increased top margin */
+      text-align: center;
+      position: relative; /* Added position relative */
+    }
+    #sankey {
+      width: 100%;
+      height: auto;
+      display: block; /* Ensure proper display */
+    }
+
+    .dashboard-section {
+      width: 90%;
+      margin: 40px auto 100px auto;
+      background-color: #fefefe;
+      padding: 20px 20px 200px 20px; /* Add extra padding at the bottom */
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+      min-height: 1000px;
+      overflow: visible; /* Make sure overflow is visible */
+    }
+
+    .dashboard-section h2 {
+      text-align: center;
+      font-size: 1.6em;
+      margin-bottom: 20px;
+      color: #0056b3;
+    }
+    .dashboard-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      gap: 15px;
+    }
+    .dashboard-section select {
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-right: 10px;
+      min-width: 200px;
+    }
+    .dashboard-section label {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    #plotlyChart {
+      width: 100%;
+      height: 700px !important;
+      position: relative;
+      box-sizing: border-box;
+      margin-bottom: 40px;
+      overflow: visible; /* Allow scale to overflow */
+    }
+
+    /* Add this to your existing style section */
+    .dashboard-description {
+      width: 90%;
+      margin: 20px auto;
+      padding: 15px 20px;
+      background-color: #f8f9fa;
+      border-left: 4px solid #0056b3;
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-description h3 {
+      color: #0056b3;
+      margin-bottom: 12px;
+      font-size: 1.3em;
+    }
+
+    .dashboard-description p {
+      line-height: 1.5;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    /* Add a spacer div after the plot */
+    .chart-spacer {
+      height: 50px;
+      width: 100%;
+      clear: both;
+    }
+    
+    /* New styling for vertical layout */
+    .visualization-section {
+      width: 90%;
+      margin: 40px auto;
+      text-align: center;
+      padding: 20px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* For side-by-side sections */
+    .side-by-side-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      width: 90%;
+      margin: 40px auto;
+      justify-content: center;
+    }
+    
+    .side-by-side-item {
+      flex: 1;
+      min-width: 300px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    
+    .visualization-section h2,
+    .side-by-side-item h2 {
+      font-size: 1.4em;
+      margin-bottom: 20px;
+      color: #0056b3;
+    }
+    
+    .visualization-section img,
+    .side-by-side-item img,
+    .visualization-section div,
+    .side-by-side-item div {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    
+    .visualization-section p,
+    .side-by-side-item p {
+      text-align: left;
+      font-size: 0.95em;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+    
+    /* Shared styling */
+    header {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #f7f7f7;
+    }
+    header h1 {
+      font-size: 2em;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    header p {
+      font-size: 1em;
+      color: #555;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+      display: flex;
+      justify-content: center;
+    }
+    nav ul li {
+      margin: 0 15px;
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+    .summary, .references {
+      padding: 20px;
+      margin: 20px auto;
+      width: 90%;
+      background-color: #f7f7f7;
+    }
+    .summary h2, .references h2 {
+      color: #333;
+      font-size: 1.5em;
+      margin-bottom: 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #f7f7f7;
+      font-size: 0.9em;
+      color: #777;
+    }
+    /* Added clearfix for proper section separation */
+    .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+    /* Custom tooltip styling */
+    .tooltip {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 1000;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      max-width: 300px;
+    }
+    /* Reset button styling */
+    .reset-btn {
+      padding: 6px 12px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+    .reset-btn:hover {
+      background-color: #e0e0e0;
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      margin: 0 10px;
+    }
+    .filter-group label {
+      margin-right: 8px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <h1>DS4200 Ski Resort Analysis</h1>
+      <p>Unveiling the Dynamics of Resort Traffic, Weather Patterns, and Terrain Diversity</p>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="project.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="visualizations.html">Visualizations</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="dashboard-section">
+    <h2>Interactive Ski Resort Explorer</h2>
+
+    <div class="dashboard-controls">
+      <div class="filter-group">
+        <label for="filterSelect">Filter by Resort:</label>
+        <select id="filterSelect">
+          <option value="all">All Resorts</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="stateFilter">Filter by State:</label>
+        <select id="stateFilter">
+          <option value="all">All States</option>
+        </select>
+      </div>
+      <button id="resetFiltersBtn" class="reset-btn">Reset All Filters</button>
+    </div>
+
+    <div id="plotlyChart"></div>
+    <div class="chart-spacer"></div>
+    <div class="dashboard-description">
+      <h3>About this Dashboard</h3>
+      <p>This interactive dashboard allows you to explore ski resort data across different states and regions. 
+         You can filter resorts by name or state to compare various metrics including altitude, snowfall, 
+         terrain difficulty, and visitor statistics. The visualization highlights the relationship between 
+         geographic location, weather conditions, and resort characteristics.</p>
+      <p>Use the filters above to customize your view and discover patterns in resort data. The reset button 
+         will return the dashboard to its default state showing all resorts. Hover over data points for 
+         additional details about specific resorts.</p>
+    </div>
+  </section>
+  
+  <div class="clearfix"></div>
+
+  <section class="sankey-container">
+    <h2>Resort to Snowfall Interactive Flow</h2>
+    <svg id="sankey" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet"></svg>
+    
+    <p>This Sankey diagram shows the relationship between 3 West Coast ski resorts – Jackson Hole, Telluride, and Snowbird – and the distribution of their 24-hour snowfall across various ranges. The chart shows how each resort experiences different snowfall intensities in categories such as 0-5 cm, 5-10 cm, 10-15 cm, 15-20 cm, and >20 cm. Snowbird receives heavier snowfalls, particularly in the >20 cm ranges, followed by Jackson Hole. This reflects the region's mountainous terrain, which is known for substantial snow accumulation and potentially more expert skiers. Telluride's snowfall is in the 0-5 cm and 5-10 cm range, indicating a lighter snowfall and maybe more suited for beginners. The diagram's color-coding and proportional flows make it easy to compare the snow conditions of each resort, allowing skiers to quickly assess which resorts are likely to experience heavier or lighter snow conditions during a given time.</p>
+    
+    <p>The design of the Sankey diagram emphasizes clarity and ease of comparison. The color coding provides an intuitive way to distinguish between the different levels of snowfall, such as blue for light snowfall and green for heavier snowfalls. The flow lines visually represent the amount of snowfall each resort received within the specified ranges, with thicker lines indicating larger proportions. This makes it easy to see the distribution of snowfall at a glance. The horizontal layout of the diagram allows for a simple comparison between the resorts, with each resort represented by a vertical bar on the left, and the snowfall ranges on the right. This approach efficiently illustrates the relationship between the resorts and snowfall patterns, giving the viewer a clear picture of which resorts are more likely to receive heavy snowfalls versus those with more moderate or consistent snowfall. The Sankey diagram's design ensures that the data is presented in a visually appealing yet informative way, making it an ideal tool for understanding complex snowfall distributions across multiple resorts.</p>
+  </section>
+
+  <!-- Side by side precipitation charts -->
+  <div class="side-by-side-container">
+    <div class="side-by-side-item">
+      <h2>Western Precipitation Trends</h2>
+      <img src="westmonthly_precipitation.png" alt="Monthly Precipitation Trends in Western Ski Resorts">
+    </div>
+    
+    <div class="side-by-side-item">
+      <h2>Eastern Precipitation Trends</h2>
+      <img src="eastmonthly_precipitation.png" alt="Monthly Precipitation Trends in Eastern Ski Resorts">
+    </div>
+  </div>
+  
+  <!-- Shared description for both precipitation charts -->
+  <div class="visualization-section" style="border-top: none; margin-top: -20px; box-shadow: none;">
+    <p>The two line charts illustrate the monthly trends in precipitation and snowfall for West Coast states (Wyoming, Colorado, Utah) and East Coast states (Vermont, New Hampshire, Maine) from 2009 to 2017. The first chart shows that the most snowfall happens during the winter months (November to March) in the west coast states, with Wyoming and Colorado receiving the most snow as well as on the east coast, with Vermont and New Hampshire receiving the most snow. A difference between the two coasts is the amount of precipitation: the East Coast states see significantly higher precipitation, with rainfall reaching up to ~450mm, while the West Coast states generally stay below 100mm. This highlights the East Coast's heavier rainfall, which can contribute to icier conditions over the West Coast. This information is valuable for skiers, as it suggests that the West Coast may offer more favorable skiing conditions with fewer icy conditions, while East Coast resorts may see more challenging, icy conditions during the winter months.</p>
+    
+    <p>The design of the charts was intended to offer a clear comparison between the two regions. The use of multiple lines – with dotted lines for precipitation and solid lines for snowfall – allows users to easily differentiate between the two weather patterns, emphasizing the contrast between precipitation and snowfall trends. We used the same color for each state, however, regardless of the type of precipitation. The x-axis is labeled by months, while the y-axis shows the amount of precipitation/snowfall in millimeters ranging from 0-500. The line chart format was chosen for its ability to effectively visualize trends over time, providing a straightforward way to compare seasonal data across states. The design is minimalistic to focus on the key patterns that are most relevant for skiers, such as snowfall peaks and precipitation differences, while avoiding unnecessary clutter.</p>
+  </div>
+
+  <!-- Boxplot section -->
+  <section class="visualization-section">
+    <h2>Ski Altitude vs State</h2>
+    <img src="altitude_boxplot.png" alt="Boxplot of Altitude vs State">
+    <p>The boxplot provides a comparison of the altitudes of ski resorts across the East Coast and West Coast of the United States. There is a clear difference between the altitude of west coast resorts versus east coast resorts. Ski resorts on the West Coast (e.g., Colorado, Utah, Wyoming) are shown to be much higher in altitude, with many resorts reaching over 3,000 meters. In contrast, resorts on the East Coast (e.g., New Hampshire, Vermont, Maine) have much lower altitudes, typically below 1,500 meters, which can result in less extreme skiing experiences and different snow conditions. This highlights the significant role altitude plays in shaping the skiing experience, from the type of terrain to the quality of snow.</p>
+    
+    <p>The design of this boxplot is to highlight the differences in altitude across ski resorts in a clear and concise way. It allows for a visual representation of the median and the interquartile range of altitude data, providing a comprehensive overview of altitude distribution for each region. The distinction between the two coasts is made using color coding, with the east coast resorts represented in blue and the west coast resorts in green. This helps the viewer immediately grasp the regional distinctions. Additionally, the presence of outliers is marked which can help offer further insights into the variation within each region. The boxplot is ideal for comparing distributions and this scenario, as it presents key statistical information in an easily digestible format, making it especially useful for visualizing how altitude influences ski resort characteristics across different regions.</p>
+  </section>
+
+  <!-- Side by side pie charts -->
+  <div class="side-by-side-container">
+    <div class="side-by-side-item">
+      <h2>Eastern Slope Distribution</h2>
+      <div id="eastPie"></div>
+    </div>
+    
+    <div class="side-by-side-item">
+      <h2>Western Slope Distribution</h2>
+      <div id="westPie"></div>
+    </div>
+  </div>
+  
+  <!-- Shared description for both pie charts -->
+  <div class="visualization-section" style="border-top: none; margin-top: -20px; box-shadow: none;">
+    <p>The pie charts provide a clear visual comparison of the slope type distribution between ski resorts on the East Coast and West Coast. The East Coast chart depicts a balanced distribution of green, blue, and black slopes, with blue slopes (intermediate difficulty) being the most occuring. This suggests resorts in New Hampshire, Vermont, and Maine, offer a diverse range of terrain suitable for a variety of skill levels, with a slight propensity on intermediate skiers. The West Coast chart, which includes resorts like Jackson Hole and Telluride, shows a dominance of black slopes expert level, with smaller portions allocated to green and blue slopes. This reflects the West Coast's emphasis on more challenging, expert-level terrain, catering to advanced skiers looking for more difficult runs. The difference in slope distributions between the two coasts highlights the distinct skiing experiences they offer: the East Coast provides a more balanced range of difficulty levels, while the West Coast specializes in more advanced terrain.</p>
+    
+    <p>The design of these pie charts is straightforward and effective in conveying the contrast between East and West Coast ski resorts. The use of distinct colors and segmentation for each slope type ensures that the charts are easily interpretable. The side-by-side arrangement of the pie charts makes it easy to compare the two regions directly. The labels and color coding are simple yet effective in communicating the differences in terrain offerings. Additionally, the legend provides context for the colors, ensuring that the viewer understands which slope type each color represents.</p>
+  </div>
+
+  <div id="boxplot"></div>
+
+  <section class="summary">
+    <h2>Key Insights</h2>
+    <p>Over the course of this project, we have learned through this process of cleaning the data, understanding what the data means, building visualizations with the data that choosing a mountain to ski requires a number of important factors. Firstly snowfall and precipitation, while obvious factors, are incredibly important when figuring out the right area of the country to go to because the more annual snowfall the better skiing opportunities there are.</p>
+    
+    <p>If there is heavy precipitation, then that can harm the amount of snow that is around during the year and cause for more icy conditions rather than powdery ones. As skiers, we value having snowier conditions over icy conditions because there is less opportunities for injury to occur, and so therefore areas like Colorado, Wyoming, and Utah are the most favorable states to ski. Secondly, as skiers that value slope variety across blues, greens, and blacks, we appreciate seeing which coast, east or west, has more variety in their slopes.</p>
+    
+    <p>What can be done in the future is to zero in on a specific mountain and really try to build a detailed visualization of what the mountain runs look like, average elevation climbed for the mountain, amenities on the mountain, and implementing average price data so that users can have more discretion over how to select a mountain. To do that would take some time given how complex the mountains can be, the fluctuation in the pricing of tickets, and the scarce information about the amenities on the mountain.</p>
+  </section>
+
+  <section class="references">
+    <h2>References</h2>
+    <ul>
+      <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9780482/">Influencing Factors of Destination Choice of Ski Tourism Enthusiasts</a></li>
+      <li><a href="https://www.tandfonline.com/doi/full/10.1080/13683500.2017.1410110">A Critical Review of Climate Change Risk for Ski Tourism</a></li>
+      <li><a href="https://www.researchgate.net/publication/338946401_THE_RESEARCH_OF_SKIER_MOTIVATIONS_AND_FACTORS_INFLUENCING_THE_CHOICE_OF_A_SKI_DESTINATION">Skier Motivations and Factors Influencing the Choice of a Ski Destination</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 DS4200 Team Project. All rights reserved.</p>
+  </footer>
+
+  <script src="project.js"></script>
+</body>
+</html>
