@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional styling to improve text formatting */
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background-color: #f7f7f7;
+            border-bottom: 1px solid #eaeaea;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .header-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header h1 {
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        nav {
+            margin-top: 20px;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #0056b3;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #e6f0ff;
+        }
+
+        section {
+            background-color: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: #0056b3;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        h3 {
+            color: #0056b3;
+            margin-top: 25px;
+        }
+
+        p {
+            margin: 20px 0;
+            text-align: justify;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 25px auto;
+            border-radius: 6px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+        }
+
+        ul ul {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f7f7f7;
+            color: #666;
+            border-radius: 8px;
+            margin-top: 30px;
+            font-size: 0.9em;
+        }
+
+        /* Add a content container for better organization */
+        .content-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Style for the data summary section */
+        .data-summary {
+            background-color: #f7fbff;
+            padding: 25px 30px;
+            border-left: 4px solid #0056b3;
+            border-radius: 0 8px 8px 0;
+            margin: 25px 0;
+        }
+
+        /* Image container for better alignment */
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>Welcome to DS4200 Project</h1>
+            <p>Exploring the Impact of Various Factors on Ski Resort Traffic and Tourism</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="project.html">Home</a></li> 
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="visualizations.html">Visualizations</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="content-container">
+        <section>
+            <h2>Project Introduction</h2>
+            <p>
+                Ski resorts are an extremely popular destination in the U.S and attract millions of visitors. Due to their popularity, there is a wide range of resorts, each that offers different activities and excursions and cost-varying rates per night. Our goal is to analyze different datasets and find a
+                correlation between factors that are present in different U.S. ski resorts and how they lead to increased or decreased traffic and tourism at each respective resort. The factors we plan to look into include but are not limited to, geographic location, snowfall levels, terrain difficulty,
+                amenities, pricing, and accessibility.
+            </p>
+
+            <p>
+                Understanding these dynamics is vital not only for tourists seeking the best ski experience but also for resort operators looking to optimize pricing, improve
+                infrastructure, and adapt to changing climate conditions. By leveraging data visualization and statistical analysis, this project will provide insights into how ski resorts can enhance their offerings and how skiers can make informed travel decisions based on the key attributes we
+                mentioned above.
+            </p>
+            
+            <div class="image-container">
+                <img src="mountain.avif" alt="Swiss Alps" width="700" height="300">
+            </div>
+        </section>
+
+        <section>
+            <h2>About our Data</h2>
+
+            <p>
+                The datasets used for this analysis provide a comprehensive comparison of East Coast and West Coast ski resorts in the United States, focusing on snow conditions, slope difficulties, and precipitation patterns. The data was sourced from GitHub and Kaggle. The data spans multiple CSV files, with a ski resorts file detailing slope difficulty percentages (easy, intermediate, and difficult) across the United States. It included a count of 357 green slopes, 360 blue slopes, and 351 black slopes. The data was then normalized to ensure the percentages sum to 100% for each level of difficulty. 
+            </p>
+            
+            <p>
+                Additional datasets, such as precip_state.csv (1,000 rows and 5 columns) and snow_state.csv (1,200 rows and 6 columns), provided regional precipitation and snowfall data, covering the years 2009–2017. Resort-specific snowfall data, including 24 hr New Snow and Season Snowfall Total, was also collected for Jackson Hole, Snowbird, and Telluride, each with around 1,000 rows and 8 columns.
+            </p>
+            
+            <p>
+                The data was cleaned by removing rows with missing values and converting string-based measurements (e.g., "cm") to numeric values. The last dataset we used had 43 columns and 5,470 entries on ski resorts and their different attributes like altitude, location, difficulty levels, restaurants, family activities, etc. The data was cleaned and we pulled 5 main columns regarding the State/Province in which the resort was located, the altitude, and the three levels of difficulty, and it was brought down to 4,490 entries. All the steps of collecting the data and scraping allowed for meaningful comparisons between East and West Coast resorts, providing valuable insights into terrain offerings and snow conditions.
+            </p>
+
+            <div class="data-summary">
+                <h3>Data Summary</h3>
+                <ul>
+                    <li><strong>Size:</strong>
+                        <ul>
+                            <li>5,470 entries, 43 columns originally (ski resorts dataset)</li>
+                            <li>Reduced to 4,490 entries and 5 columns after cleaning</li>
+                            <li><code>precip_state.csv</code> – 1,000 rows, 5 columns</li>
+                            <li><code>snow_state.csv</code> – 1,200 rows, 6 columns</li>
+                            <li>~1,000 rows and 8 columns for each resort (Jackson Hole, Snowbird, Telluride)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Source:</strong>
+                        <ul>
+                            <li><a href="https://github.com/hristo-mavrodiev/Ski_resorts_Analysis" target="_blank">Ski Resort Attributes and Ratings – GitHub</a></li>
+                            <li><a href="https://github.com/nnvutisa/weather" target="_blank">Snowfall and Weather Data – GitHub</a></li>
+                            <li><a href="https://github.com/awslabs/open-data-registry/blob/main/datasets/noaa-ghcn.yaml" target="_blank">NOAA GHCN Precipitation Data – AWS Registry</a></li>
+                        </ul>
+                    </li>
+                    <li><strong>Terminology:</strong>
+                        <ul>
+                            <li><strong>Green / Blue / Black:</strong> Easy, Intermediate, and Difficult slope classifications</li>
+                            <li><strong>24 hr New Snow:</strong> Snowfall over a 24-hour period</li>
+                            <li><strong>Season Snowfall Total:</strong> Cumulative snowfall over the course of a ski season</li>
+                            <li><strong>Alt.:</strong> Altitude (in feet or meters)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Grouped Features:</strong>
+                        <ul>
+                            <li><strong>Geographic Info:</strong> State/Province, Resort location</li>
+                            <li><strong>Terrain & Difficulty:</strong> % of green, blue, and black slopes</li>
+                            <li><strong>Snow & Weather:</strong> 24 hr New Snow, Season Snowfall Total, Precipitation</li>
+                            <li><strong>Resort Attributes:</strong> Altitude, family activities, number of restaurants</li>
+                            <li><strong>Temporal Coverage:</strong> 2009–2017</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="image-container">
+                <img src="skiier.jpg" alt="skiier" width="700" height="300">
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 DS4200 Team Project. All rights reserved.</p>
+    </footer>
+</body>
+</html>
